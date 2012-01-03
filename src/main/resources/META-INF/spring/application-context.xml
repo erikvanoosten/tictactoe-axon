@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:axon="http://www.axonframework.org/schema/core"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+                           http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+                           http://www.axonframework.org/schema/core http://www.axonframework.org/schema/axon-core.xsd">
+
+    <!-- Activate Spring's annotation support -->
+    <context:annotation-config/>
+
+    <!-- Activate Axon's annotation support -->
+    <axon:annotation-config/>
+    <!--
+       Override defaults with:
+       <axon:annotation-config command-bus="commandBus" executor="taskExecutor"/>
+    -->
+
+    <!-- Activate finding annotated Spring components. -->
+    <context:component-scan base-package="cqrs.workshop.tictactoe"/>
+
+    <!-- ================================================ -->
+    <!-- Command bus -->
+
+    <!-- Example with an embedded ref:
+    <axon:commandBus id="commandBus">
+        <axon:interceptors><ref local="commandbus-interceptor"/></axon:interceptors>
+    </axon:commandBus>
+    -->
+
+    <!-- Completely written out example with a single interceptor ref:
+    <bean id="commandBus" class="org.axonframework.commandhandling.SimpleCommandBus">
+         <property name="interceptors"> <bean class="org.axonframework.commandhandling.interceptors.SpringTransactionalInterceptor">
+         <property name="transactionManager" ref="transactionManager"/> </bean> </property>
+    </bean>
+    -->
+
+    <!-- Example with an embedded bean: -->
+    <axon:command-bus id="commandBus">
+        <axon:interceptors>
+            <!-- Process each command in a db transaction. -->
+            <bean class="org.axonframework.commandhandling.interceptors.SpringTransactionalInterceptor">
+                <property name="transactionManager" ref="transactionManager"/>
+            </bean>
+        </axon:interceptors>
+    </axon:command-bus>
+
+    <!-- ================================================ -->
+    <!-- Event bus -->
+
+    <!--    <bean id="eventBus" class="org.axonframework.eventhandling.SimpleEventBus" />-->
+    <axon:event-bus id="eventBus"/>
+
+    <!-- ================================================ -->
+    <!-- Event sourcing: repository, store and snapshotter. -->
+
+    <!-- Attributes event-bus and event-store are optional. -->
+    <axon:event-sourcing-repository
+        id="gameRepository"
+        aggregate-type="cqrs.workshop.tictactoe.command.Game"
+        event-bus="eventBus"
+        event-store="eventStore">
+        <axon:snapshotter-trigger event-count-threshold="5" snapshotter-ref="snapshotter"/>
+    </axon:event-sourcing-repository>
+
+    <!--
+    <bean id="snapshotter"
+          class="org.axonframework.eventsourcing.SpringAggregateSnapshotter">
+        <property name="eventStore" ref="eventStore"/>
+        <property name="executor" ref="taskExecutor"/>
+    </bean>
+    -->
+    <axon:snapshotter id="snapshotter" event-store="eventStore" executor="taskExecutor"/>
+
+    <!-- Store events with JPA. -->
+    <!--    <bean id="eventStore" class="org.axonframework.eventstore.jpa.JpaEventStore" />-->
+    <axon:jpa-event-store id="eventStore"/>
+
+    <!-- ================================================ -->
+    <!-- Support -->
+    <bean id="taskExecutor"
+          class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
+        <property name="corePoolSize" value="2"/>
+        <property name="maxPoolSize" value="5"/>
+        <property name="waitForTasksToCompleteOnShutdown" value="true"/>
+    </bean>
+
+</beans>
