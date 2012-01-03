@@ -19,7 +19,13 @@ object Events {
     positions: String
   ) extends GameEvent(gameId)
 
-  // TODO: Add GameMoveEvent
   // property 'winner': null when the game is still going, "draw" when the game ended in a draw, otherwise equal to property 'player'
+  case class GameMoveEvent(
+    gameId: String,
+    player: String,
+    move: Int,
+    positions: String,
+    winner: String
+  ) extends GameEvent(gameId)
 
 }

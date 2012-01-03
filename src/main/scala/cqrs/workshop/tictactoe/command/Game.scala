@@ -9,6 +9,7 @@ import cqrs.workshop.tictactoe.api.Events._
 
 /**
  * Aggregate root for a Tic Tac Toe Game.
+ * 
  */
 class Game(id: AggregateIdentifier) extends AbstractAnnotatedAggregateRoot(id) {
   private val gameId: String = id.asString()
@@ -23,10 +24,12 @@ class Game(id: AggregateIdentifier) extends AbstractAnnotatedAggregateRoot(id) {
   }
 
   def move(player: String, move: Int) {
-    // TODO: Add implementation:
-    // 1. validate input
-    // 2. determine state of the board after the move
-    // 3. either apply appropriate new event, or throw IllegalMoveException
+    board.move(playerFor(player), move) match {
+      case Left(errMsg) => throw new IllegalMoveException(errMsg)
+      case Right(WinningBoard(winner, positions)) => apply(GameMoveEvent(gameId, player, move, positions, nameFor(winner)))
+      case Right(DrawBoard(positions)) => apply(GameMoveEvent(gameId, player, move, positions, "draw"))
+      case Right(PlayingBoard(_, positions)) => apply(GameMoveEvent(gameId, player, move, positions, null))
+    }
   }
 
   @EventHandler
@@ -36,8 +39,29 @@ class Game(id: AggregateIdentifier) extends AbstractAnnotatedAggregateRoot(id) {
     board = EmptyBoard
   }
 
+  @EventHandler
   private def onMove(event: GameMoveEvent) {
-    // TODO: .....
+    board = board.move(playerFor(event.player), event.move) match {
+      case Left(errMsg) => new IllegalBoard(board.positions, errMsg)
+      case Right(newBoard) => newBoard
+    }
+  }
+
+  private def playerFor(playerName: String): Player =
+    if (playerX == playerName) X
+    else if (playerO == playerName) O
+    else throw new IllegalMoveException("Unknown player " + playerName)
+
+  private def nameFor(player: Player) = player match {
+    case X => playerX
+    case O => playerO
+  }
+
+  case class IllegalBoard(positions: String, lastErr: String) extends Board {
+    def move(p: Player, move: Int) = Left(lastErr)
+    def nextPlayer = None
+    def finished = true
+    def winner = None
   }
 
 }

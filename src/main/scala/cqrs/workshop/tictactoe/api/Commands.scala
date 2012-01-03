@@ -8,6 +8,10 @@ object Commands {
     playerO: String
   )
 
-  // TODO: add MoveCommand
+  case class MoveCommand(
+    gameId: String,
+    player: String,
+    move: Int
+  )
 
 }

@@ -17,12 +17,13 @@ class GameCommandHandler {
 
   @CommandHandler
   def createGame(command: StartGameCommand) {
-    gameRepository.add(new Game(/* TODO: ....... */))
+    gameRepository.add(new Game(command.gameId, command.playerX, command.playerO))
   }
 
+  @CommandHandler
   def move(command: MoveCommand) {
     val game = gameRepository.load(new StringAggregateIdentifier(command.gameId))
-    // TODO
+    game.move(command.player, command.move)
   }
 
   @Autowired
