@@ -20,9 +20,9 @@ class Game() {
     this.winner = winner
   }
 
-  @Id @BeanProperty private var gameId: String = _
-  @Basic @BeanProperty private var playerX: String = _
-  @Basic @BeanProperty private var playerO: String = _
-  @Basic @BeanProperty private var positions: String = _
-  @Basic @BeanProperty private var winner: String = _
+  @Id @BeanProperty  var gameId: String = _
+  @Basic @BeanProperty  var playerX: String = _
+  @Basic @BeanProperty  var playerO: String = _
+  @Basic @BeanProperty  var positions: String = _
+  @Basic @BeanProperty  var winner: String = _
 }
