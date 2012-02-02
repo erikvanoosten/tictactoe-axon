@@ -17,7 +17,7 @@ class GameCommandHandler {
 
   @CommandHandler
   def createGame(command: StartGameCommand) {
-    gameRepository.add(new Game(/* TODO: ....... */))
+    gameRepository.add(new Game(/* TODO: make sure you use the correct constructor */))
   }
 
   def move(command: MoveCommand) {
