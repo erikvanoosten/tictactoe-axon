@@ -1,16 +1,12 @@
 package cqrs.workshop.tictactoe.api
 
-import org.axonframework.domain.DomainEvent
 
 object Events {
 
   /**
    * positions: a string of 9 "X", "O" and " " characters
    */
-  abstract class GameEvent(gameId: String) extends DomainEvent {
-    override def equals(that: Any) = that.isInstanceOf[DomainEvent] &&
-      this.getEventIdentifier == that.asInstanceOf[DomainEvent].getEventIdentifier
-  }
+  abstract class GameEvent(gameId: String)
 
   case class GameCreatedEvent(
     gameId: String,

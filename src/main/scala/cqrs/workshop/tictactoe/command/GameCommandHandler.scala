@@ -1,7 +1,6 @@
 package cqrs.workshop.tictactoe.command
 
 import org.axonframework.commandhandling.annotation.CommandHandler
-import org.axonframework.domain.StringAggregateIdentifier
 import org.axonframework.repository.Repository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
@@ -22,7 +21,7 @@ class GameCommandHandler {
 
   @CommandHandler
   def move(command: MoveCommand) {
-    val game = gameRepository.load(new StringAggregateIdentifier(command.gameId))
+    val game = gameRepository.load(command.gameId)
     game.move(command.player, command.move)
   }
 

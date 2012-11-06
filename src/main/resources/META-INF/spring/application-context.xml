@@ -25,26 +25,19 @@
 
     <!-- Example with an embedded ref:
     <axon:commandBus id="commandBus">
-        <axon:interceptors><ref local="commandbus-interceptor"/></axon:interceptors>
+        <axon:handlerInterceptors><ref local="commandbus-interceptor"/></axon:handlerInterceptors>
     </axon:commandBus>
     -->
 
     <!-- Completely written out example with a single interceptor ref:
     <bean id="commandBus" class="org.axonframework.commandhandling.SimpleCommandBus">
-         <property name="interceptors"> <bean class="org.axonframework.commandhandling.interceptors.SpringTransactionalInterceptor">
+         <property name="handlerInterceptors"> <bean class="org.axonframework.commandhandling.interceptors.SpringTransactionalInterceptor">
          <property name="transactionManager" ref="transactionManager"/> </bean> </property>
     </bean>
     -->
 
     <!-- Example with an embedded bean: -->
-    <axon:command-bus id="commandBus">
-        <axon:interceptors>
-            <!-- Process each command in a db transaction. -->
-            <bean class="org.axonframework.commandhandling.interceptors.SpringTransactionalInterceptor">
-                <property name="transactionManager" ref="transactionManager"/>
-            </bean>
-        </axon:interceptors>
-    </axon:command-bus>
+    <axon:command-bus id="commandBus" transaction-manager="transactionManager"/>
 
     <!-- ================================================ -->
     <!-- Event bus -->

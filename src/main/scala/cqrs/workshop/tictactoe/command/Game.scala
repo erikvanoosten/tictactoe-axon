@@ -1,8 +1,7 @@
 package cqrs.workshop.tictactoe.command
 
-import org.axonframework.eventsourcing.annotation.AbstractAnnotatedAggregateRoot
+import org.axonframework.eventsourcing.annotation.{AggregateIdentifier, AbstractAnnotatedAggregateRoot}
 import org.axonframework.eventhandling.annotation.EventHandler
-import org.axonframework.domain.{StringAggregateIdentifier, AggregateIdentifier}
 
 import cqrs.workshop.tictactoe.api.IllegalMoveException
 import cqrs.workshop.tictactoe.api.Events._
@@ -11,14 +10,15 @@ import cqrs.workshop.tictactoe.api.Events._
  * Aggregate root for a Tic Tac Toe Game.
  * 
  */
-class Game(id: AggregateIdentifier) extends AbstractAnnotatedAggregateRoot(id) {
-  private val gameId: String = id.asString()
+class Game() extends AbstractAnnotatedAggregateRoot[String] {
+  @AggregateIdentifier
+  private var gameId: String = _
   private var playerX: String = _
   private var playerO: String = _
   private var board: Board = _
 
   def this(gameId: String, playerX: String, playerO: String) {
-    this(new StringAggregateIdentifier(gameId))
+    this()
     if (playerX == playerO) throw new IllegalMoveException("Players may not have same name")
     apply(GameCreatedEvent(gameId, playerX, playerO, EmptyBoard.positions))
   }
@@ -34,6 +34,7 @@ class Game(id: AggregateIdentifier) extends AbstractAnnotatedAggregateRoot(id) {
 
   @EventHandler
   private def onCreate(event: GameCreatedEvent) {
+    gameId = event.gameId
     playerX = event.playerX
     playerO = event.playerO
     board = EmptyBoard

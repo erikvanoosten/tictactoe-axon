@@ -10,19 +10,19 @@ import org.axonframework.test.FixtureConfiguration
 import org.axonframework.test.Fixtures
 
 class GameCommandHandlerTest {
-  private var fixture: FixtureConfiguration = _
+  private var fixture: FixtureConfiguration[Game] = _
 
   @Before
   def setUp: Unit = {
-    fixture = Fixtures.newGivenWhenThenFixture
+    fixture = Fixtures.newGivenWhenThenFixture(classOf[Game])
     val commandHandler: GameCommandHandler = new GameCommandHandler
-    commandHandler.setGameRepository(fixture.createGenericRepository(classOf[Game]))
+    commandHandler.setGameRepository(fixture.getRepository)
     fixture.registerAnnotatedCommandHandler(commandHandler)
   }
 
   @Test
   def testGameStarted: Unit = {
-    val gameId: String = fixture.getAggregateIdentifier.asString
+    val gameId: String = "mygameid"
     val abel = "Abel"
     val bob = "Bob"
     fixture.
@@ -33,7 +33,7 @@ class GameCommandHandlerTest {
 
   @Test
   def testMove: Unit = {
-    val gameId: String = fixture.getAggregateIdentifier.asString
+    val gameId: String = "mygameid"
     val abel = "Abel"
     val bob = "Bob"
     fixture.
@@ -44,7 +44,7 @@ class GameCommandHandlerTest {
 
   @Test
   def testWin: Unit = {
-    val gameId: String = fixture.getAggregateIdentifier.asString
+    val gameId: String = "mygameid"
     val abel = "Abel"
     val bob = "Bob"
     fixture.

@@ -1,12 +1,13 @@
 package cqrs.workshop.tictactoe.main
 
 import org.springframework.context.support.ClassPathXmlApplicationContext
-import org.axonframework.commandhandling.CommandBus
+import org.axonframework.commandhandling.{GenericCommandMessage, CommandBus}
 
 import cqrs.workshop.tictactoe.api.Commands._
 import cqrs.workshop.tictactoe.command.Board
 import cqrs.workshop.tictactoe.query.{Game, GameQueryRepository}
 import org.springframework.context.ConfigurableApplicationContext
+import GenericCommandMessage.asCommandMessage
 
 /**
  * Example game of Tic Tac Toe.
@@ -25,17 +26,17 @@ object PlayTicTacToe {
     val bob = "Bob"
     val clark = "Clark"
     val dave = "Dave"
-    commandBus.dispatch(StartGameCommand("1", abel, bob))
-    commandBus.dispatch(MoveCommand("1", abel, 2))
-    commandBus.dispatch(MoveCommand("1", bob, 3))
-    commandBus.dispatch(StartGameCommand("2", clark, dave))
-    commandBus.dispatch(MoveCommand("2", clark, 6))
-    commandBus.dispatch(MoveCommand("2", dave, 5))
-    commandBus.dispatch(MoveCommand("1", abel, 4))
-    commandBus.dispatch(MoveCommand("2", clark, 3))
-    commandBus.dispatch(MoveCommand("2", dave, 4))
-    commandBus.dispatch(MoveCommand("1", bob, 5))
-    commandBus.dispatch(MoveCommand("2", clark, 9))
+    commandBus.dispatch(asCommandMessage(StartGameCommand("1", abel, bob)))
+    commandBus.dispatch(asCommandMessage(MoveCommand("1", abel, 2)))
+    commandBus.dispatch(asCommandMessage(MoveCommand("1", bob, 3)))
+    commandBus.dispatch(asCommandMessage(StartGameCommand("2", clark, dave)))
+    commandBus.dispatch(asCommandMessage(MoveCommand("2", clark, 6)))
+    commandBus.dispatch(asCommandMessage(MoveCommand("2", dave, 5)))
+    commandBus.dispatch(asCommandMessage(MoveCommand("1", abel, 4)))
+    commandBus.dispatch(asCommandMessage(MoveCommand("2", clark, 3)))
+    commandBus.dispatch(asCommandMessage(MoveCommand("2", dave, 4)))
+    commandBus.dispatch(asCommandMessage(MoveCommand("1", bob, 5)))
+    commandBus.dispatch(asCommandMessage(MoveCommand("2", clark, 9)))
 
     // Display result
     val games = queryRepository.findGames()
