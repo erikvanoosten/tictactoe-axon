@@ -1,3 +1,5 @@
+[![No Maintenance Intended](http://unmaintained.tech/badge.svg)](http://unmaintained.tech/)
+
 CQRS Tic Tac Toe exercise with Axon
 ===================================
 
